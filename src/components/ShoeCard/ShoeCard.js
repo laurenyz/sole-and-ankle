@@ -30,6 +30,24 @@ const ShoeCard = ({
     : isNewShoe(releaseDate)
       ? 'new-release'
       : 'default'
+  
+  const FLAGMAP = {
+    'on-sale': {
+      label: "Sale",
+      backgroundColor: COLORS.primary
+    },
+    'new-release': {
+      label: "Just Released!",
+      backgroundColor: COLORS.secondary
+    }
+  }
+
+  const flagColor = FLAGMAP[variant]?.backgroundColor
+  const flagLabel = FLAGMAP[variant]?.label
+
+  if(!flagColor && variant!=="default"){
+    throw new Error('No flag color found')
+  }
 
   return (
     <Link href={`/shoe/${slug}`}>
@@ -37,13 +55,21 @@ const ShoeCard = ({
         <ImageWrapper>
           <Image alt="" src={imageSrc} />
         </ImageWrapper>
+        {
+          variant !== "default" &&
+          <Flag variant={variant} style={{'background-color': flagColor}}>{flagLabel}</Flag>
+        }
         <Spacer size={12} />
         <Row>
           <Name>{name}</Name>
-          <Price>{formatPrice(price)}</Price>
+          <Price variant={variant}>{formatPrice(price)}</Price>
         </Row>
         <Row>
           <ColorInfo>{pluralize('Color', numOfColors)}</ColorInfo>
+          {
+            variant==="on-sale"&&
+            <SalePrice>{formatPrice(salePrice)}</SalePrice>
+          }
         </Row>
       </Wrapper>
     </Link>
@@ -55,16 +81,35 @@ const Link = styled.a`
   color: inherit;
 `;
 
-const Wrapper = styled.article``;
+const Wrapper = styled.article`
+  position: relative;
+`;
+
+const Flag = styled.span`
+  position: absolute;
+  color: white;
+  top: 12px;
+  right: -4px;
+  background-color: var(--background-color);
+  padding: 8px;
+  border-radius: 2px;
+  font-size: .875rem;
+  font-weight: 700;
+`
 
 const ImageWrapper = styled.div`
   position: relative;
 `;
 
-const Image = styled.img``;
+const Image = styled.img`
+  max-height: 312px;
+  max-width: 340px;
+`;
 
 const Row = styled.div`
   font-size: 1rem;
+  display: flex;
+  justify-content: space-between;
 `;
 
 const Name = styled.h3`
@@ -72,7 +117,9 @@ const Name = styled.h3`
   color: ${COLORS.gray[900]};
 `;
 
-const Price = styled.span``;
+const Price = styled.span`
+  text-decoration: ${p => p.variant==="on-sale"? "line-through" : "none"};
+`;
 
 const ColorInfo = styled.p`
   color: ${COLORS.gray[700]};
