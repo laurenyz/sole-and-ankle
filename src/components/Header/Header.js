@@ -31,12 +31,12 @@ const Header = () => {
 
 const MainHeader = styled.div`
   position: relative;
-  padding: 0 32px;
+  padding: 18px 32px;
   height: 72px;
   border-bottom: 1px solid ${COLORS.gray[300]};
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: baseline;
 `;
 
 const Side = styled.div`

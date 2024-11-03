@@ -30,35 +30,17 @@ const ShoeCard = ({
     : isNewShoe(releaseDate)
       ? 'new-release'
       : 'default'
-  
-  const FLAGMAP = {
-    'on-sale': {
-      label: "Sale",
-      backgroundColor: COLORS.primary
-    },
-    'new-release': {
-      label: "Just Released!",
-      backgroundColor: COLORS.secondary
-    }
-  }
-
-  const flagColor = FLAGMAP[variant]?.backgroundColor
-  const flagLabel = FLAGMAP[variant]?.label
-
-  if(!flagColor && variant!=="default"){
-    throw new Error('No flag color found')
-  }
 
   return (
     <Link href={`/shoe/${slug}`}>
       <Wrapper>
         <ImageWrapper>
           <Image alt="" src={imageSrc} />
+          {variant === 'on-sale' && <SaleFlag>Sale</SaleFlag>}
+          {variant === 'new-release' && (
+            <NewFlag>Just released!</NewFlag>
+          )}
         </ImageWrapper>
-        {
-          variant !== "default" &&
-          <Flag variant={variant} style={{'background-color': flagColor}}>{flagLabel}</Flag>
-        }
         <Spacer size={12} />
         <Row>
           <Name>{name}</Name>
@@ -97,13 +79,21 @@ const Flag = styled.span`
   font-weight: 700;
 `
 
+const SaleFlag = styled(Flag)`
+  background-color: ${COLORS.primary};
+`
+
+const NewFlag = styled(Flag)`
+  background-color: ${COLORS.secondary};
+`
+
 const ImageWrapper = styled.div`
   position: relative;
 `;
 
 const Image = styled.img`
-  max-height: 312px;
-  max-width: 340px;
+  width: 100%;
+  border-radius: 16px 16px 4px 4px;
 `;
 
 const Row = styled.div`
@@ -118,6 +108,7 @@ const Name = styled.h3`
 `;
 
 const Price = styled.span`
+  color: ${p => p.variant==="on-sale"? COLORS.gray[700] : "none"};
   text-decoration: ${p => p.variant==="on-sale"? "line-through" : "none"};
 `;
 
